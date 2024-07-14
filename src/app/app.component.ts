@@ -1,39 +1,51 @@
-import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { RouterOutlet } from '@angular/router';
-import { debounceTime } from 'rxjs';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { debounceTime, switchMap } from 'rxjs/operators';
+import { of } from 'rxjs';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule,ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, HttpClientModule],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  styleUrls: ['./app.component.css'],
 })
 export class AppComponent implements OnInit {
   title = 'debouncing';
-  searchForm!:FormGroup;
-  constructor(private http:HttpClient){
-    this.searchForm=new FormGroup({
-      search:new FormControl('Arrabiata')
-    })
+  response: any[] = [];
+  searchForm: FormGroup;
+  totalCount: number=0 ;
+
+  constructor(private http: HttpClient) {
+    this.searchForm = new FormGroup({
+      search: new FormControl(''),
+    });
   }
+
   ngOnInit(): void {
-      this.getMeals(this.searchForm.get('search')?.value);
+    this.searchForm
+      .get('search')
+      ?.valueChanges.pipe(
+        debounceTime(500), //500 milisec
+        switchMap((search) =>
+          search ? this.getUsers(search) : of({ items: [] })
+        )
+      )
+      .subscribe({
+        next: (res) => {
+          this.totalCount=res.total_count;
+          this.response = res && res.items ? res.items : [];
+        },
+        error: (error) => {
+          this.response = [];
+        },
+      });
   }
-  private getMeals(search:string){
-    const url:string=`www.themealdb.com/api/json/v1/1/search.php?s=${search}`
-    this.http.get(url).pipe(
-      debounceTime(50000)
-    ).subscribe({
-      next:(res)=>{
-        console.log(res);
-      },
-      error:(error)=>{
-        console.error(error);
-      }
-  })
+
+  private getUsers(search: string) {
+    const url = `https://api.github.com/search/users?q=${search}`;
+    return this.http.get<any>(url);
   }
 }

@@ -1,4 +1,23 @@
-<form [formGroup]="searchForm">
-  <label>Search Meal : </label>
-  <input type="text" formControlName="search">
-</form>
+<div>
+  <form [formGroup]="searchForm">
+    <div class="input-container">
+      <input
+        type="text"
+        formControlName="search"
+        placeholder="Search GitHub users..."
+      />
+    </div>
+  </form>
+  <div class="nodata" *ngIf="totalCount==0 else users">
+    <div>No user found !!</div>
+  </div>
+  <ng-template #users>
+    <div class="users-container">
+    <div class="users-count">Total Users : {{ totalCount }}</div>
+    <div *ngFor="let user of response" class="container">
+      <img [src]="user.avatar_url" class="img-show" />
+      <a [href]="user.html_url" target="_blank">{{ user.login }}</a>
+    </div>
+  </div>
+  </ng-template>
+</div>
