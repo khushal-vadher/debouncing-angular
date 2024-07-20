@@ -4,11 +4,18 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { debounceTime, switchMap } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { CommonModule } from '@angular/common';
+import { UserCardComponent } from './module/user-card/user-card.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, HttpClientModule],
+  imports: [
+    UserCardComponent,
+    CommonModule,
+    ReactiveFormsModule,
+    HttpClientModule,
+    UserCardComponent,
+  ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
 })
@@ -16,11 +23,11 @@ export class AppComponent implements OnInit {
   title = 'debouncing';
   response: any[] = [];
   searchForm: FormGroup;
-  totalCount: number=0 ;
+  totalCount: number = 0;
 
   constructor(private http: HttpClient) {
     this.searchForm = new FormGroup({
-      search: new FormControl(''),
+      search: new FormControl('ke'),
     });
   }
 
@@ -35,7 +42,8 @@ export class AppComponent implements OnInit {
       )
       .subscribe({
         next: (res) => {
-          this.totalCount=res.total_count;
+          this.totalCount = res.total_count;
+          console.log(res);
           this.response = res && res.items ? res.items : [];
         },
         error: (error) => {

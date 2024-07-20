@@ -3,18 +3,10 @@
 }
 
 .users-count {
-    float: right;
     margin-right: 2.5rem;
     font-size: xx-large;
 }
 
-.container {
-    display: flex;
-    margin: 20px;
-    gap: 50px;
-    align-items: center;
-    border: 1px
-}
 
 .nodata {
     min-height: 500px;
@@ -30,12 +22,16 @@
     color: red;
 }
 
-.img-show {
-    height: 40px;
-    width: 40px;
-    border-radius: 50%;
-}
 
+.container{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: 20px;
+    gap: 50px;
+    align-items: center;
+}
 .input-container {
     position: relative;
     display: inline-block;
@@ -70,7 +66,7 @@
     /* Adjust icon size as needed */
     height: 20px;
     /* Adjust icon size as needed */
-    /* background-image: url('path-to-your-search-icon.svg'); */
+    background-image: url('../assets/images/icons8-search.svg');
     /* Replace with your icon path */
     background-size: cover;
     cursor: pointer;
